@@ -1,0 +1,46 @@
+services:
+  tong-ghor:
+    build: .
+    restart: unless-stopped
+    env_file:
+      - .env
+    depends_on:
+      - db
+      - redis
+    ports:
+      - "8080:8080"
+    networks:
+      - tongghor
+
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: tongghor
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: tongghor
+    volumes:
+      - tongghor_db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - tongghor
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - tongghor_redis_data:/data
+    ports:
+      - "6379:6379"
+    networks:
+      - tongghor
+
+volumes:
+  tongghor_db_data:
+  tongghor_redis_data:
+
+networks:
+  tongghor:
+    driver: bridge

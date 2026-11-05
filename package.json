@@ -1,0 +1,47 @@
+{
+  "name": "tong-ghor",
+  "version": "1.0.0",
+  "description": "Tong Ghor — Discord Community Management and Protection Platform",
+  "private": true,
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx watch src/index.ts",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix",
+    "format": "prettier --write \"src/**/*.ts\" \"tests/**/*.ts\"",
+    "format:check": "prettier --check \"src/**/*.ts\" \"tests/**/*.ts\"",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "migrate": "tsx src/database/migrate.ts",
+    "db:studio": "echo 'Use psql against configured DATABASE_URL'"
+  },
+  "dependencies": {
+    "@discordjs/rest": "^2.4.0",
+    "discord.js": "^14.16.3",
+    "ioredis": "^5.4.1",
+    "pg": "^8.13.0",
+    "pino": "^8.21.0",
+    "pino-pretty": "^11.3.0",
+    "zod": "^3.24.1",
+    "uuid": "^10.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@types/pg": "^8.11.10",
+    "@types/uuid": "^10.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.15.0",
+    "@typescript-eslint/parser": "^8.15.0",
+    "eslint": "^9.15.0",
+    "prettier": "^3.3.3",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.5"
+  }
+}
