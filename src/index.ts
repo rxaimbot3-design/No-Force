@@ -28,13 +28,21 @@ async function start(): Promise<void> {
     log.error('tong-ghor: redis unhealthy; continuing in degraded mode');
   }
 
-  const head = await db.queryOne<{ hash: string }>(
-    `SELECT hash FROM audit_log ORDER BY created_at DESC LIMIT 1`
-  );
-  if (head) audit.setChainHead(head.hash);
+  try {
+    const head = await db.queryOne<{ hash: string }>(
+      `SELECT hash FROM audit_log ORDER BY created_at DESC LIMIT 1`
+    );
+    if (head) audit.setChainHead(head.hash);
+  } catch {
+    log.warn('tong-ghor: could not load audit chain head, starting fresh');
+  }
 
-  await runMigrations();
-  await applySeedSchema();
+  try {
+    await runMigrations();
+    await applySeedSchema();
+  } catch {
+    log.warn('tong-ghor: migrations/schema skipped (db unavailable), running in degraded mode');
+  }
 
   log.info('tong-ghor: core framework initialized');
 

@@ -2,11 +2,15 @@ import Redis from 'ioredis'
 import { config } from '../config'
 
 function createClient(): Redis {
-  return new Redis(config.redis.url, {
+  const client = new Redis(config.redis.url, {
     maxRetriesPerRequest: 3,
     retryStrategy: (times) => Math.min(times * 100, 5000),
     lazyConnect: true
   })
+  client.on('error', () => {
+    // Suppress noisy connection errors; health() reports status instead
+  })
+  return client
 }
 
 export class RedisClient {
