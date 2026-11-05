@@ -1,19 +1,26 @@
+# Stage 1: build
+FROM node:24-alpine AS builder
+
+WORKDIR /app
+
+COPY package.json package-lock.json* ./
+RUN npm ci
+
+COPY tsconfig.json ./
+COPY src ./src
+RUN npx tsc
+
+# Stage 2: run
 FROM node:24-alpine
 
 WORKDIR /app
 
 ENV NODE_ENV=production
 
-# Install dependencies
 COPY package.json package-lock.json* ./
 RUN npm ci --omit=dev && npm cache clean --force
 
-# Copy source and build
-COPY tsconfig.json ./
-COPY src ./src
-RUN npx tsc
-
-# Copy migrations and schema
+COPY --from=builder /app/dist ./dist
 COPY src/database ./src/database
 
 EXPOSE 8080
